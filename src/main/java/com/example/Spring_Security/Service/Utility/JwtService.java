@@ -1,4 +1,4 @@
-package com.example.Spring_Security.Service;
+package com.example.Spring_Security.Service.Utility;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -76,4 +76,6 @@ public class JwtService {
     public String extractUsername(String token){
         return extractClaims(token,Claims::getSubject);
     }
+
+
 }
