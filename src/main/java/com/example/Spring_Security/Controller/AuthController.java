@@ -1,5 +1,6 @@
 package com.example.Spring_Security.Controller;
 
+import com.example.Spring_Security.Model.AuthenticationRequest;
 import com.example.Spring_Security.Model.AuthenticationResponse;
 import com.example.Spring_Security.Model.RegisterRequest;
 import com.example.Spring_Security.Service.UserService.UserDetails;
@@ -12,6 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * This is accessible by anyone. Because we have given permit all
+ */
 
 @RestController
 @RequestMapping("api/auth/v1")
@@ -27,4 +32,12 @@ public class AuthController {
         return new ResponseEntity<>(authenticationResponse, HttpStatus.CREATED);
 
     }
+
+    @PostMapping("login")
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest authenticationRequest){
+        AuthenticationResponse authentication = userDetails.Authentication(authenticationRequest);
+        return new ResponseEntity<>(authentication, HttpStatus.OK);
+    }
+
+
 }

@@ -61,7 +61,7 @@ public class JwtService {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigninKey())
                 .build()
-                .parseClaimsJwt(token)
+                .parseClaimsJws(token)
                 .getBody();
     }
 
@@ -71,7 +71,7 @@ public class JwtService {
     }
 
     /**
-     * Extracting userName from the token header>subject*/
+     * Extracting userName from the token payload>subject*/
 
     public String extractUsername(String token){
         return extractClaims(token,Claims::getSubject);
