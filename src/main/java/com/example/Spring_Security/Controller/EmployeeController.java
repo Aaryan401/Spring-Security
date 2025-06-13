@@ -59,7 +59,7 @@ public class EmployeeController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("update-profile")
     public ResponseEntity<String> updateProfile(@Valid @RequestBody ProfileDto profileDto,@AuthenticationPrincipal User user ){
-        String response = employeeService.updateProfileAdmin(profileDto, user);
+        String response = employeeService.updateProfileByAdmin(profileDto, user);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
