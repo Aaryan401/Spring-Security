@@ -8,4 +8,5 @@ public interface EmployeeServiceInterface {
     public String saveProfile(Profile profile, User user);
     public ProfileDto findProfile(User user);
     public String updateProfile(Profile profile, Long profileId);
+    public String updateProfileByAdmin(ProfileDto profileDto, User user);
 }

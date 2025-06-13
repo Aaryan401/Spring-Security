@@ -51,8 +51,15 @@ public class EmployeeController {
     }
 
     @PutMapping("update-profile/{pId}")
-    public ResponseEntity<String> updateProfile(@PathVariable("pId") Long profileId, @RequestBody Profile profile ){
+    public ResponseEntity<String> updateProfile(@PathVariable("pId") Long profileId,@Valid @RequestBody Profile profile ){
         String response = employeeService.updateProfile(profile, profileId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("update-profile")
+    public ResponseEntity<String> updateProfile(@Valid @RequestBody ProfileDto profileDto,@AuthenticationPrincipal User user ){
+        String response = employeeService.updateProfileAdmin(profileDto, user);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

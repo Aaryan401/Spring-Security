@@ -56,4 +56,22 @@ public class EmployeeServiceImpl implements EmployeeServiceInterface{
 
         return "profile has been updated!";
     }
+
+    @Override
+    public String updateProfileByAdmin(ProfileDto profileDto, User user) {
+        Profile existingProfile = profileRepository.findByUserUserId(user.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
+        String[] str=profileDto.getFullName().split(" ");
+        user.setFirstName(str[0]);
+        user.setLastName(str[1]);
+        user.setEmail(profileDto.getEmail());
+        existingProfile.setAge(profileDto.getAge());
+        existingProfile.setCity(profileDto.getCity());
+        existingProfile.setAddress(profileDto.getAddress());
+        existingProfile.setMobile(profileDto.getMobile());
+        userRepository.save(user);
+        profileRepository.save(existingProfile);
+        return "Your profile has been updated";
+    }
+
+
 }

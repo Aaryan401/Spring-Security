@@ -22,27 +22,26 @@ public class Profile {
     private Long profileId;
 
 
+    @Max(value = 150, message = "Age must be less than 150")
     @Column(nullable = false)
     private int age;
 
-    @NotBlank(message = "Age must not be blank")
+    @NotBlank(message = "Mobile must not be blank")
     @Size(min = 10, max = 13, message = "Mobile number must be 10 digits")
     @Column(nullable = false)
     private String mobile;
 
-    @NotBlank(message = "Age must not be blank")
+    @NotBlank(message = "City must not be blank")
     @Column(nullable = false)
     private String city;
 
-    @NotBlank(message = "Age must not be blank")
+    @NotBlank(message = "Address must not be blank")
     @Column(nullable = false)
     private String address;
 
-    @NotBlank(message = "Age must not be blank")
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
 
-    @NotBlank(message = "Age must not be blank")
     @Column(nullable = false)
     private LocalDateTime updateDate;
 
