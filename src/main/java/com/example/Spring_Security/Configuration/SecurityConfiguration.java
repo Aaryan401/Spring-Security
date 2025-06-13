@@ -44,6 +44,7 @@ public class SecurityConfiguration {
                         .permitAll()    //By giving permitAll i.e. The method within that URL(URLand Prefix written in requestMatchers) is accessible to all
                         .requestMatchers("/api/admin/v1/**").hasRole("ADMIN")
                         .requestMatchers("/api/employee/v1/**").hasAnyRole("EMPLOYEE","ADMIN")
+                        .requestMatchers("/api/manager/v1/**").hasRole("MANAGER")
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)
