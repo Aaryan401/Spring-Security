@@ -1,13 +1,20 @@
 package com.example.Spring_Security.Service.Employee;
 
 import com.example.Spring_Security.Entity.Profile;
+import com.example.Spring_Security.Entity.Task;
 import com.example.Spring_Security.Entity.User;
 import com.example.Spring_Security.Model.ProfileDto;
+import com.example.Spring_Security.Model.TaskDto;
 import com.example.Spring_Security.Repository.ProfileRepository;
+import com.example.Spring_Security.Repository.TaskRepository;
 import com.example.Spring_Security.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +25,9 @@ public class EmployeeServiceImpl implements EmployeeServiceInterface{
 
    @Autowired
    private final UserRepository userRepository;
+
+   @Autowired
+   private final TaskRepository taskRepository;
 
     @Override
     public String saveProfile(Profile profile, User user) {
@@ -58,19 +68,62 @@ public class EmployeeServiceImpl implements EmployeeServiceInterface{
     }
 
     @Override
-    public String updateProfileByAdmin(ProfileDto profileDto, User user) {
-        Profile existingProfile = profileRepository.findByUserUserId(user.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
+    public String updateProfileByAdmin(ProfileDto profileDto,Long userId) {
+        Profile existingProfile = profileRepository.findByUserUserId(userId).orElseThrow(() -> new RuntimeException("User not found"));
         String[] str=profileDto.getFullName().split(" ");
-        user.setFirstName(str[0]);
-        user.setLastName(str[1]);
-        user.setEmail(profileDto.getEmail());
+        existingProfile.getUser().setFirstName(str[0]);
+        existingProfile.getUser().setLastName(str[1]);
+        existingProfile.getUser().setEmail(profileDto.getEmail());
         existingProfile.setAge(profileDto.getAge());
         existingProfile.setCity(profileDto.getCity());
         existingProfile.setAddress(profileDto.getAddress());
         existingProfile.setMobile(profileDto.getMobile());
-        userRepository.save(user);
         profileRepository.save(existingProfile);
         return "Your profile has been updated";
+    }
+
+    @Override
+    public List<TaskDto> findTaskByUser(User user) {
+        User foundUser = userRepository.findById(user.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
+        List<Task> taskList = taskRepository.findByAssignToUserId(foundUser.getUserId());
+        return taskList.stream().map(task -> {
+            LocalDate completionDate = null;
+            if ("COMPLETED".equalsIgnoreCase(String.valueOf(task.getStatus()))) {
+                completionDate = LocalDate.now();
+            }
+            TaskDto taskDto = TaskDto.builder()
+                    .taskId(task.getTaskId())
+                    .title(task.getTitle())
+                    .description(task.getDescription())
+                    .employeeName(task.getAssignTo().getFirstName()+" "+task.getAssignTo().getLastName())
+                    .managerName(task.getAssignBy().getFirstName()+" "+task.getAssignBy().getLastName())
+                    .status(task.getStatus())
+                    .creation(LocalDate.from(task.getCreation()))
+                    .deadline(LocalDate.from(task.getDeadline()))
+                    .completionDate(completionDate)
+                    .build();
+            return taskDto;
+        }).toList();
+    }
+
+//    @Override
+//    public List<Task> findTaskByUser(User user) {
+//        if(user.getTask().isEmpty()){
+//            return new ArrayList<>() ;
+//        }
+//        return user.getTask();
+//    }
+
+
+
+
+    @Override
+    public Task updateTask(Long userId, Task task) {
+        User foundUser = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        foundUser.getTask();
+        task.setStatus(task.getStatus());
+        taskRepository.save(task);
+        return task;
     }
 
 

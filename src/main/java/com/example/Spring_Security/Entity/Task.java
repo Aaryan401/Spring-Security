@@ -1,6 +1,8 @@
 package com.example.Spring_Security.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,7 +32,7 @@ public class Task {
     @Column(nullable = false)
     private LocalDateTime deadline;
 
-    @Column(nullable = false)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime completionDate;
 
     @Column(nullable = false)
@@ -39,10 +41,12 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "employee_id")
+    @JsonIgnore
     private User assignTo;
 
     @ManyToOne
     @JoinColumn(name = "manager_id")
+    @JsonIgnore
     private User assignBy;
 
     @PrePersist

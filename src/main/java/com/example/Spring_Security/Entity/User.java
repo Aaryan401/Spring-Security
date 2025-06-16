@@ -1,5 +1,6 @@
 package com.example.Spring_Security.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -86,4 +88,10 @@ public class User implements UserDetails {
         public boolean isEnabled() {
             return true;
         }
+
+        @OneToMany(mappedBy = "assignTo",fetch = FetchType.EAGER)
+        private List<Task> task = new ArrayList<>();
+
+        @OneToMany(mappedBy = "assignBy",fetch = FetchType.EAGER)
+        private List<Task> task1 = new ArrayList<>();
 }

@@ -1,8 +1,10 @@
 package com.example.Spring_Security.Controller;
 
 import com.example.Spring_Security.Entity.Profile;
+import com.example.Spring_Security.Entity.Task;
 import com.example.Spring_Security.Entity.User;
 import com.example.Spring_Security.Model.ProfileDto;
+import com.example.Spring_Security.Model.TaskDto;
 import com.example.Spring_Security.Service.Employee.EmployeeServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -13,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * This is accessible by Employee and Admin only because we have given hasAnyRole("EMPLOYEE","ADMIN")
@@ -57,9 +61,18 @@ public class EmployeeController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("update-profile")
-    public ResponseEntity<String> updateProfile(@Valid @RequestBody ProfileDto profileDto,@AuthenticationPrincipal User user ){
-        String response = employeeService.updateProfileByAdmin(profileDto, user);
+    @PutMapping("update-profile-by-admin/{userId}")
+    public ResponseEntity<String> updateProfileByAdmin(@PathVariable Long userId ,@Valid @RequestBody ProfileDto profileDto){
+        String response = employeeService.updateProfileByAdmin(profileDto,userId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping("find-task")
+    public ResponseEntity<List<TaskDto>> getTask(@AuthenticationPrincipal User user){
+        List<TaskDto> taskByUser = employeeService.findTaskByUser(user);
+        return new ResponseEntity<>(taskByUser, HttpStatus.OK);
+    }
+
+
+
 }
