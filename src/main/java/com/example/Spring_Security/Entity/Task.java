@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.LocalDateTime;
 
@@ -54,6 +55,5 @@ public class Task {
         this.creation = LocalDateTime.now();
         this.deadline = LocalDateTime.now().plusDays(2);
     }
-
 
 }

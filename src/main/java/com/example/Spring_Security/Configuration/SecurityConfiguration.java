@@ -40,7 +40,7 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> req
-                        .requestMatchers("/api/auth/v1/**")
+                        .requestMatchers("/api/auth/v1/**","/swagger-ui/**","/swagger-ui.html/**","/v3/api-docs/**")
                         .permitAll()    //By giving permitAll i.e. The method within that URL(URLand Prefix written in requestMatchers) is accessible to all
                         .requestMatchers("/api/admin/v1/**").hasRole("ADMIN")
                         .requestMatchers("/api/employee/v1/**").hasAnyRole("EMPLOYEE","ADMIN")

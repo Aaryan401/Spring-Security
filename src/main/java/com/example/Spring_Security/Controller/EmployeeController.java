@@ -6,6 +6,12 @@ import com.example.Spring_Security.Entity.User;
 import com.example.Spring_Security.Model.ProfileDto;
 import com.example.Spring_Security.Model.TaskDto;
 import com.example.Spring_Security.Service.Employee.EmployeeServiceImpl;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,16 +32,32 @@ import java.util.List;
 @RequestMapping("api/employee/v1")
 @PreAuthorize("hasAnyRole('EMPLOYEE','ADMIN')")
 @RequiredArgsConstructor
+
+/**
+ *This is Swagger Annotation which give the information about the Controller behaviour
+ */
+@Tag(name = "Employee Controller",
+     description = "This Controller Contains all the APIs related to the Employee, like- creating, updating, retrieving"
+)
 public class EmployeeController {
 
     @Autowired
     private final EmployeeServiceImpl employeeService;
 
+    @Hidden
+    @Operation(
+            summary = "Test api",
+            description = "This API is for test purposes only."
+    )
     @GetMapping("greet")
     public String greet(){
         return "hi this Employee dashboard";
     }
 
+    @Operation(
+            summary = "Test API for Admin",
+            description = "This API can only be tested by ADMIN."
+    )
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("meet")
     public String meet(){
@@ -54,8 +76,13 @@ public class EmployeeController {
         return new ResponseEntity<>(profile,HttpStatus.OK);
     }
 
+    @Operation(
+            summary ="This API updating the profile details using the Profile id, need to pass the profile id with API"
+    )
     @PutMapping("update-profile/{pId}")
-    public ResponseEntity<String> updateProfile(@PathVariable("pId") Long profileId,@Valid @RequestBody Profile profile ){
+    public ResponseEntity<String> updateProfile(@Parameter(description = "ID of the profile")
+                                                @PathVariable("pId") Long profileId,
+                                                @Valid @RequestBody Profile profile ){
         String response = employeeService.updateProfile(profile, profileId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -67,6 +94,19 @@ public class EmployeeController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "To get all the task of the Logged in User"
+    )
+    @ApiResponses( value={
+        @ApiResponse(
+            description = "OK: If task find Successfully It will return the json data of the list of Tasks.",
+            responseCode = "200"
+    ),
+        @ApiResponse(responseCode = "403",
+                     description = "Forbidden: If the user is not authorized to access the resource."
+        )
+}
+    )
     @GetMapping("find-task")
     public ResponseEntity<List<TaskDto>> getTask(@AuthenticationPrincipal User user){
         List<TaskDto> taskByUser = employeeService.findTaskByUser(user);
